@@ -10,6 +10,9 @@ namespace Brutus
     {
         static void Main(string[] args)
         {
+            BrutusAnalyzer b = new BrutusAnalyzer();
+            b.ProcessPasswordList(@"C:\Users\Kyle\Desktop\passwords.txt");
+            b.DumpStats(@"C:\Users\Kyle\Desktop\");
         }
     }
 }
