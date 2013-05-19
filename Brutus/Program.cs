@@ -10,9 +10,14 @@ namespace Brutus
     {
         static void Main(string[] args)
         {
-            BrutusAnalyzer b = new BrutusAnalyzer();
-            b.ProcessPasswordList(@"C:\Users\Kyle\Desktop\passwords.txt");
+            //BrutusAnalyzer b = new BrutusAnalyzer();
+            //b.ProcessPasswordList(@"C:\Users\Kyle\Desktop\passwords.txt");
+
+            BrutusAnalyzer b = BrutusAnalyzer.DeserializeFromFile(@"C:\Users\Kyle\Desktop\serialized.xml");
+            
             b.DumpStats(@"C:\Users\Kyle\Desktop\");
+
+            BrutusAnalyzer.SerializeToFile(b, @"C:\Users\Kyle\Desktop\serialized.xml");
         }
     }
 }

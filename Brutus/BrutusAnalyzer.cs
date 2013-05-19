@@ -135,6 +135,30 @@ namespace Brutus
                     }
                 }
             }
+
+            string pos2Char2CharFreqMap1Path = Path.Combine(folderPath, outputPrefix + "_pos2Char2CharFreqMap1.txt");
+            using (StreamWriter writer = new StreamWriter(pos2Char2CharFreqMap1Path))
+            {
+                foreach (byte asciiVal in this.CharToNextCharToCount.Keys)
+                {
+                    Dictionary<byte, int> nextCharToCount = this.CharToNextCharToCount[asciiVal];
+
+                    foreach (byte nextAsciiVal in nextCharToCount.Keys)
+                    {
+                        char charVal = Convert.ToChar(asciiVal);
+                        char nextCharVal = Convert.ToChar(nextAsciiVal);
+
+                        List<string> lineData = new List<string>();
+                        lineData.Add(asciiVal.ToString());
+                        lineData.Add(nextAsciiVal.ToString());
+                        lineData.Add(charVal.ToString());
+                        lineData.Add(nextCharVal.ToString());
+                        lineData.Add(nextCharToCount[nextAsciiVal].ToString());
+
+                        writer.WriteLine(String.Join("\t", lineData.ToArray()));
+                    }
+                }
+            }
         }
 
         public void ProcessPasswordList(string filename)
@@ -194,11 +218,22 @@ namespace Brutus
 
         public static void SerializeToFile(BrutusAnalyzer b, string filename)
         {
+            DataContractSerializer serializer = new DataContractSerializer(b.GetType());
+
+            using (FileStream stream = new FileStream(filename, FileMode.OpenOrCreate))
+            {
+                serializer.WriteObject(stream, b);
+            }
         }
 
         public static BrutusAnalyzer DeserializeFromFile(string filename)
         {
-            return null;
+            DataContractSerializer serializer = new DataContractSerializer(typeof(BrutusAnalyzer));
+
+            using (FileStream stream = new FileStream(filename, FileMode.Open))
+            {
+                return (BrutusAnalyzer)serializer.ReadObject(stream);
+            }
         }
     }
 
