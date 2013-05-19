@@ -1,0 +1,27 @@
+TopNext
+122222233344
+1msMSCacBPAlbpDLtdjJT2iHrkRgIn
+aronelicusrylmh4 Sng1207mb35st
+12anerit0723olngrdlys_98th_435
+12072398er34an45865.7*ic6!otng
+
+Mask Space Coverage .00014454%
+Mask Total Cracking Time 820.03:00:00
+Matched 4757
+Missed 454101
+Matched 1.0367%
+Missed 98.9633%
+
+Top
+122222233344
+1msMSCacBPAlbpDLtdjJT2iHrkRgIn
+eiantrlosdcmkhyu1gvp2b0A43_-fE
+10239ea48756niorls!t._ydm*hcu-
+102e93a485i67onrslt.my!*dc_hu-
+
+Mask Space Coverage .00014454%
+Mask Total Cracking Time 820.03:00:00
+Matched 13638
+Missed 445220
+Matched 2.9722%
+Missed 97.0278%

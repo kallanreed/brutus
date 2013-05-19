@@ -8,8 +8,13 @@ using System.Threading.Tasks;
 
 namespace Brutus
 {
+    /// <summary>
+    /// Processes a password list and produces statistics
+    /// about the list concerning frequency and position
+    /// of characters in the passwords
+    /// </summary>
     [DataContract]
-    public class BrutusAnalyzer
+    public class PasswordAnalyzer
     {
         #region Properties
         [DataMember]
@@ -55,7 +60,7 @@ namespace Brutus
         }
         #endregion
 
-        public BrutusAnalyzer()
+        public PasswordAnalyzer()
         {
             Initialize();
         }
@@ -66,6 +71,10 @@ namespace Brutus
             Initialize();
         }
 
+        /// <summary>
+        /// Instantiates all of the dictionaries, added here because
+        /// the constructor is not called when deserialized
+        /// </summary>
         internal void Initialize()
         {
             this.PositionToCount = new Dictionary<int, int>();
@@ -78,6 +87,7 @@ namespace Brutus
 
         public void DumpStats(string folderPath, string outputPrefix = "Brutus")
         {
+            // Dump summary
             string summaryPath = Path.Combine(folderPath, outputPrefix + "_summary.txt");
             using (StreamWriter writer = new StreamWriter(summaryPath))
             {
@@ -85,6 +95,7 @@ namespace Brutus
                 writer.WriteLine("Average Length\t{0}", Math.Round((double)this.TotalPasswordLength / this.PasswordCount, 2));
             }
 
+            // Dump position/char frequency
             string freqMap1Path = Path.Combine(folderPath, outputPrefix + "_freqMap1.txt");
             using (StreamWriter writer = new StreamWriter(freqMap1Path))
             {
@@ -112,6 +123,7 @@ namespace Brutus
                 }
             }
 
+            // Dump char to nextChar frequency
             string char2CharFreqMap1Path = Path.Combine(folderPath, outputPrefix + "_char2CharFreqMap1.txt");
             using (StreamWriter writer = new StreamWriter(char2CharFreqMap1Path))
             {
@@ -136,26 +148,36 @@ namespace Brutus
                 }
             }
 
+            // Dump position to char to nextChar frequency
             string pos2Char2CharFreqMap1Path = Path.Combine(folderPath, outputPrefix + "_pos2Char2CharFreqMap1.txt");
             using (StreamWriter writer = new StreamWriter(pos2Char2CharFreqMap1Path))
             {
-                foreach (byte asciiVal in this.CharToNextCharToCount.Keys)
+                foreach (int position in this.PositionToCharToNextCharToCount.Keys)
                 {
-                    Dictionary<byte, int> nextCharToCount = this.CharToNextCharToCount[asciiVal];
+                    Dictionary<byte, Dictionary<byte, int>> charToNextCharToCount =
+                        this.PositionToCharToNextCharToCount[position];
 
-                    foreach (byte nextAsciiVal in nextCharToCount.Keys)
+                    foreach (byte asciiVal in charToNextCharToCount.Keys)
                     {
-                        char charVal = Convert.ToChar(asciiVal);
-                        char nextCharVal = Convert.ToChar(nextAsciiVal);
+                        Dictionary<byte, int> nextCharToCount = charToNextCharToCount[asciiVal];
 
-                        List<string> lineData = new List<string>();
-                        lineData.Add(asciiVal.ToString());
-                        lineData.Add(nextAsciiVal.ToString());
-                        lineData.Add(charVal.ToString());
-                        lineData.Add(nextCharVal.ToString());
-                        lineData.Add(nextCharToCount[nextAsciiVal].ToString());
+                        foreach (byte nextAsciiVal in nextCharToCount.Keys)
+                        {
+                            char charVal = Convert.ToChar(asciiVal);
+                            char nextCharVal = Convert.ToChar(nextAsciiVal);
 
-                        writer.WriteLine(String.Join("\t", lineData.ToArray()));
+                            List<string> lineData = new List<string>();
+                            lineData.Add(position.ToString());
+                            lineData.Add(asciiVal.ToString());
+                            lineData.Add(nextAsciiVal.ToString());
+                            lineData.Add(charVal.ToString());
+                            lineData.Add(nextCharVal.ToString());
+                            lineData.Add(nextCharToCount[nextAsciiVal].ToString());
+                            lineData.Add(this.CharToNextCharToCount[asciiVal][nextAsciiVal].ToString());
+
+
+                            writer.WriteLine(String.Join("\t", lineData.ToArray()));
+                        }
                     }
                 }
             }
@@ -216,7 +238,7 @@ namespace Brutus
             }
         }
 
-        public static void SerializeToFile(BrutusAnalyzer b, string filename)
+        public static void SerializeToFile(PasswordAnalyzer b, string filename)
         {
             DataContractSerializer serializer = new DataContractSerializer(b.GetType());
 
@@ -226,13 +248,13 @@ namespace Brutus
             }
         }
 
-        public static BrutusAnalyzer DeserializeFromFile(string filename)
+        public static PasswordAnalyzer DeserializeFromFile(string filename)
         {
-            DataContractSerializer serializer = new DataContractSerializer(typeof(BrutusAnalyzer));
+            DataContractSerializer serializer = new DataContractSerializer(typeof(PasswordAnalyzer));
 
             using (FileStream stream = new FileStream(filename, FileMode.Open))
             {
-                return (BrutusAnalyzer)serializer.ReadObject(stream);
+                return (PasswordAnalyzer)serializer.ReadObject(stream);
             }
         }
     }
