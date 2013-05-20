@@ -65,6 +65,7 @@ namespace Brutus.Builders
             {
                 //Dictionary<byte, int> nextChar2Count = this.Analyzer.PositionToCharToNextCharToCount[position][current];
                 Dictionary<byte, int> nextChar2Count = this.Analyzer.CharToNextCharToCount[current];
+                position++;
 
                 if (nextChar2Count == null)
                 {
@@ -76,7 +77,7 @@ namespace Brutus.Builders
 
                 foreach (KeyValuePair<byte, int> pair in sorted)
                 {
-                    foreach (string s in FullDictionary(pair.Key, ++position, val + Convert.ToChar(pair.Key)))
+                    foreach (string s in FullDictionary(pair.Key, position, val + Convert.ToChar(pair.Key)))
                     {
                         yield return s;
                     }

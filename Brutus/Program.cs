@@ -25,7 +25,7 @@ namespace Brutus
             {
                 MaxOutputSizeInBytes = 1024 * 1024 * 1,
                 Analyzer = analyzer,
-                TargetWordSize = 12
+                TargetWordSize = 3
             };
 
             builder.GenerateDictionary(@"C:\Users\Kyle\Desktop\dictionary_out.txt");
