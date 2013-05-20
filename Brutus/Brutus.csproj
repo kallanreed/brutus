@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\TopNextDictionaryBuilder.cs" />
     <Compile Include="CharsetSelector.cs" />
+    <Compile Include="DictionaryBuilder.cs" />
     <Compile Include="Mask.cs" />
     <Compile Include="Optimizers\MiddleShiftMaskOptimizer.cs" />
     <Compile Include="PasswordAnalyzer.cs" />
