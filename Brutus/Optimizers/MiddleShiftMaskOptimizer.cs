@@ -24,11 +24,14 @@ namespace Brutus.Optimizers
                 maskList.Add(2);
             }
 
-            // set first and last two to 1 and 4
+            // set first and last to 1 and 4
             maskList[0] = 1;
             maskList[maskList.Count - 1] = 4;
-            maskList[maskList.Count - 2] = 4;
-            this.toChange = maskList.Count - 3;
+            this.toChange = maskList.Count - 2;
+
+            // have two 4's
+            //maskList[maskList.Count - 2] = 4;
+            //this.toChange = maskList.Count - 3;
 
             // build a memory list of passwords because we hammer on it
             using (StreamReader reader = new StreamReader(this.PasswordListFilename))

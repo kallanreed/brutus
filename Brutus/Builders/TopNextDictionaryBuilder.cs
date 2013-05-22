@@ -63,23 +63,38 @@ namespace Brutus.Builders
             }
             else
             {
-                //Dictionary<byte, int> nextChar2Count = this.Analyzer.PositionToCharToNextCharToCount[position][current];
-                Dictionary<byte, int> nextChar2Count = this.Analyzer.CharToNextCharToCount[current];
                 position++;
+
+                // This list is built on the prob of a char following char X in position Y
+                // that's why subtract 1 from position
+                Dictionary<byte, int> nextChar2Count = null;
+                if (this.Analyzer.PositionToCharToNextCharToCount.ContainsKey(position - 1) &&
+                    this.Analyzer.PositionToCharToNextCharToCount[position - 1].ContainsKey(current))
+                {
+                    nextChar2Count = this.Analyzer.PositionToCharToNextCharToCount[position - 1][current];
+                }
 
                 if (nextChar2Count == null)
                 {
-                    // no next data for the current character, this is a dead end
-                    yield break;
+                    // fall back to the position-less list
+                    nextChar2Count = this.Analyzer.CharToNextCharToCount[current];
                 }
 
                 List<KeyValuePair<byte, int>> sorted = nextChar2Count.OrderByDescending(pair => pair.Value).ToList();
 
+                int count = 0;
                 foreach (KeyValuePair<byte, int> pair in sorted)
                 {
+                    count++;
+
                     foreach (string s in FullDictionary(pair.Key, position, val + Convert.ToChar(pair.Key)))
                     {
                         yield return s;
+                    }
+
+                    if (count > this.TargetWordSize - (position / 2))
+                    {
+                        break;
                     }
                 }
             }
